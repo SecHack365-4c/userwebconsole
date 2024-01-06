@@ -1,0 +1,11 @@
+FROM node:21-alpine
+
+WORKDIR /frontend
+
+COPY ./frontend/package*.json ./
+RUN npm install
+
+COPY ./frontend .
+
+EXPOSE 8080
+CMD ["npm", "run", "serve"]
