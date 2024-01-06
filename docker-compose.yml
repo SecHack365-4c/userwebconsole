@@ -1,3 +1,41 @@
-version: 
+version: "3"
 services:
-  frontend:
+  # フロントエンド
+  fe:
+    container_name: frontend
+    build: ./fe
+    volumes:
+      - ./frontend:/frontend
+      - node_modules_volume:/frontend/node_modules
+    ports:
+      - "8080:8080"
+    links:
+      - backend
+  # バックエンド
+  backend:
+    container_name: backend
+    build: ./backend
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "5000:5000"
+    command: flask run --host 0.0.0.0 --port 5000
+    links:
+      - db
+  # データベース
+　db:
+    image: mysql:8.0
+    platform: linux/amd64
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: demo
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./db/IoTInfo:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3307:3307
+    command: --port 3307
+volumes:
+  node_modules_volume:
